@@ -8,7 +8,7 @@ namespace MathJson
 {
     public class ColumnAverage
     {
-        public double Avarage(List<MathDbKript> data, int period,  int col_end, int col_start = 0)
+        public double Avarage(List<MathDbKript> data, int period, int col_end, int col_start = 0)
         {
             double X_ = default;
             double result = default;
@@ -27,14 +27,14 @@ namespace MathJson
             return result;
 
         }
-        public double btcIssuance(List<MathDbKript> data,  int col_end)
+        public double btcIssuance(List<MathDbKript> data, int col_end)
         {
             double btc = 0;
             double btcVal = 0;
             double Result = 0;
 
             btc = Math.Floor(data[col_end].Index / 1458.00);
-            btcVal = (double)Math.Pow(2,btc);
+            btcVal = (double)Math.Pow(2, btc);
             Result = 7200 / btcVal;
 
             return Result;
@@ -60,7 +60,7 @@ namespace MathJson
         {
             double result = default;
             if (col_end == 0) return double.NaN;
-            result = (double)((data[col_end].AdjClose/ data[col_end-1].AdjClose)-1)*100;
+            result = (double)((data[col_end].AdjClose / data[col_end - 1].AdjClose) - 1) * 100;
             return result;
         }
 
@@ -71,7 +71,7 @@ namespace MathJson
             int nan_Values = 0;
 
             if (col_end == 0) return double.NaN;
-            
+
             if (col_end >= period) col_start = col_end - period;
             //Считаем среднее знеачене по выборке 365 значений
             for (int i = col_start; i < col_end; i++)
@@ -99,7 +99,7 @@ namespace MathJson
                 if (double.IsNaN(data[i].Return)) nan_Values += 1;
                 else X_ += data[i].Return;
             }
-      
+
             if (col_end - col_start - nan_Values == 0) return double.NaN;
             else X_ = X_ / (col_end - col_start - nan_Values);
 
@@ -108,9 +108,9 @@ namespace MathJson
             {
                 // опрделяется ка разница между значением Return и полученным средним значением по всему столбцу 
                 // в указанном диапазоне
-                if (!double.IsNaN(data[i].Return)) Y_ += (double)Math.Pow((double)(data[i].Return - X_),2);
+                if (!double.IsNaN(data[i].Return)) Y_ += (double)Math.Pow((double)(data[i].Return - X_), 2);
             }
-            result = (double)Math.Sqrt((double)(Y_ / (col_end - col_start - nan_Values)));
+            result = (double)Math.Sqrt((double)(Y_ / (col_end - col_start - nan_Values - 1)));
 
             return result;
         }
@@ -118,7 +118,7 @@ namespace MathJson
 
         public double PoweLaw(List<MathDbKript> data, int col_end)
         {
-            
+
             //Вычисляем xValues
             double[] xValues = new double[col_end + 1];
             //xValues[0] = 0;
@@ -126,19 +126,19 @@ namespace MathJson
             //yValues[0] = 0;
 
             for (int i = 0; i < col_end + 1; i++)
-            {               
-                    //Вычисляем xValues
-                    xValues[i] = Math.Log10(data[i].Ind);
-                    //Вычисляем yValues
-                    yValues[i] = Math.Log10(data[i].AdjClose);                
+            {
+                //Вычисляем xValues
+                xValues[i] = Math.Log10(data[i].Ind);
+                //Вычисляем yValues
+                yValues[i] = Math.Log10(data[i].AdjClose);
             }
-                       
+
 
             //Линейниая регрессия
             double rSquared, intercept, slope;
-            LinearRegression rS = new LinearRegression(); 
+            LinearRegression rS = new LinearRegression();
             rS.LinearRegressions(xValues, yValues, out rSquared, out intercept, out slope);
-            
+
             var predictedValue = (slope * Math.Log10(data[col_end].Ind)) + intercept; //посленее значение по оси xValues
             //Console.WriteLine($"PredictionValue: {predictedValue}");
 
@@ -151,7 +151,7 @@ namespace MathJson
             double result = default;
             double[] cummin = { double.NaN, double.NaN, double.NaN, double.NaN, double.NaN, double.NaN };
             double[] cummax = { double.NaN, double.NaN, double.NaN, double.NaN, double.NaN, double.NaN };
-            string[] indicators = {"PuellMultiple", "Price_52w", "PowerLaw", "Sharpe", "Mayer", "Risk_MA_400" };
+            string[] indicators = { "PuellMultiple", "Price_52w", "PowerLaw", "Sharpe", "Mayer", "Risk_MA_400" };
 
 
             for (int i = 0; i < data.Count; i++)
@@ -189,13 +189,13 @@ namespace MathJson
                 ////Вычисляем PowerLaw
                 if (!double.IsNaN(data[i].PowerLaw) && data[i].PowerLaw != 0)
                 {
-                    if (!double.IsNaN(cummin[1])) cummin[2] = Math.Min(cummin[2], data[i].PowerLaw);
+                    if (!double.IsNaN(cummin[2])) cummin[2] = Math.Min(cummin[2], data[i].PowerLaw);
                     else cummin[2] = data[i].PowerLaw;
 
                     if (!double.IsNaN(cummax[2])) cummax[2] = Math.Max(cummax[2], data[i].PowerLaw);
                     else cummax[2] = data[i].PowerLaw;
 
-                    if ((cummax[2] - cummin[1]) != 0) result = (data[i].PowerLaw - cummin[2]) / (cummax[2] - cummin[2]);
+                    if ((cummax[2] - cummin[2]) != 0) result = (data[i].PowerLaw - cummin[2]) / (cummax[2] - cummin[2]);
                     else result = cummin[2];
 
                     data[i].PowerLaw = result;
@@ -204,10 +204,10 @@ namespace MathJson
                 ////Вычисляем Sharpe
                 if (!double.IsNaN(data[i].Sharpe) && data[i].Sharpe != 0)
                 {
-                    if (!double.IsNaN(cummin[1])) cummin[3] = Math.Min(cummin[3], data[i].Sharpe);
+                    if (!double.IsNaN(cummin[3])) cummin[3] = Math.Min(cummin[3], data[i].Sharpe);
                     else cummin[3] = data[i].Sharpe;
 
-                    if (!double.IsNaN(cummax[3])) cummax[1] = Math.Max(cummax[3], data[i].Sharpe);
+                    if (!double.IsNaN(cummax[3])) cummax[3] = Math.Max(cummax[3], data[i].Sharpe);
                     else cummax[3] = data[i].Sharpe;
 
                     if ((cummax[3] - cummin[3]) != 0) result = (data[i].Sharpe - cummin[3]) / (cummax[3] - cummin[3]);
@@ -241,14 +241,55 @@ namespace MathJson
                     if (!double.IsNaN(cummax[5])) cummax[5] = Math.Max(cummax[5], data[i].Risk_MA_400);
                     else cummax[5] = data[i].Risk_MA_400;
 
-                    if ((cummax[5] - cummin[5]) != 0) result = (data[i].Risk_MA_400 - cummin[5]) / (cummax[5]- cummin[5]);
+                    if ((cummax[5] - cummin[5]) != 0) result = (data[i].Risk_MA_400 - cummin[5]) / (cummax[5] - cummin[5]);
                     else result = cummin[5];
 
                     data[i].Risk_MA_400 = result;
                 }
-                
+            }
+        }
+
+        public void AVG(List<MathDbKript> data)
+        {
+
+
+            string[] indicators = { "PuellMultiple", "PowerLaw", "Sharpe", "Risk_MA_400", "Mayer"};
+            double result = default;
+            
+            //Считаем среднее знеачене по строке
+            for (int i = 0; i < data.Count; i++)
+            {
+                double X_ = default;
+                int nan_Values = 0;
+
+                if (!double.IsNaN(data[i].PuellMultiple) && data[i].PuellMultiple != double.PositiveInfinity) 
+                { 
+                    X_ = data[i].PuellMultiple;
+                    nan_Values += 1;
+                }
+                if (!double.IsNaN(data[i].PowerLaw))
+                {
+                    X_ = X_ + data[i].PowerLaw;
+                    nan_Values += 1;
+                }
+                if (!double.IsNaN(data[i].Sharpe))
+                {
+                    X_ = X_ + data[i].Sharpe;
+                    nan_Values += 1;
+                }                
+                if (!double.IsNaN(data[i].Risk_MA_400))
+                {
+                    X_ = X_ + data[i].Risk_MA_400;
+                    nan_Values += 1;
+                }
+                if (!double.IsNaN(data[i].Mayer))
+                {
+                    X_ = X_ + data[i].Mayer;
+                    nan_Values += 1;
+                }
+                if (nan_Values != 0) data[i].AVG = X_ / nan_Values;
+
             }
         }
     }
-    
 }

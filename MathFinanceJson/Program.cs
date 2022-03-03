@@ -89,7 +89,11 @@ namespace MathFainanceJson
 
                     //Shape
                     // ++++++++++++Проверить данные
-                    if (bts_usd_R[RowNewJson].Return_365_STD != 0) bts_usd_R[RowNewJson].Sharpe = (double)(bts_usd_R[RowNewJson].Return_MA_365_1 / bts_usd_R[RowNewJson].Return_365_STD);
+                    if (bts_usd_R[RowNewJson].Return_365_STD != 0)
+                    {
+                        bts_usd_R[RowNewJson].Sharpe = (double)(bts_usd_R[RowNewJson].Return_MA_365_1 / 
+                                                                bts_usd_R[RowNewJson].Return_365_STD);
+                    }
                     else bts_usd_R[RowNewJson].Sharpe = 0;
 
                     //ind
@@ -103,6 +107,9 @@ namespace MathFainanceJson
 
                 //произведем нормализацию данных после рассчета
                 csd.NormalizationData(data: bts_usd_R);
+
+                //Avg
+                csd.AVG(data: bts_usd_R);
 
                 //  Запишем данные в файл                 
                 using (FileStream fs_write = new FileStream("H:/Projects/MathFinanceJson_0/MathFinanceJson/MathFinanceJson/Json_File/btc_usd_sharp_00.json", FileMode.OpenOrCreate))
