@@ -29,29 +29,29 @@ namespace MathJson
         public int Ind { get; set; }
         public double PowerLaw { get; set; }
         public double AVG { get; set; }            
-        public MathDbKript() { }
+        //public MathDbKript() { }
         public MathDbKript(int index, string date, double adjClose)
         {
             this.Index = index;
             this.Date = date;
             this.AdjClose = adjClose;
-            this.MA_400 = 0.0;
-            this.Risk_MA_400 = 0.0;
-            this.MA_200 = 0.0;
-            this.Mayer = 0.0;  
-            this.BtcIssuance = 0.0;
-            this.UsdIssuance = 0.0;            
-            this.MAusdIssuance = 0.0;
-            this.PuellMultiple = 0.0;
-            this.MA_365 = 0.0;
-            this.Price_52w = 0.0;
-            this.Return = 0.0;
-            this.Return_MA_365_1 = 0.0;
-            this.Return_365_STD = 0.0;
-            this.Sharpe = 0.0;
-            this.PowerLaw = 0.0;
-            this.Ind = 0;
-            this.AVG = 0.0;
+            this.MA_400 = double.NaN;
+            this.Risk_MA_400 = double.NaN;
+            //this.MA_200 = double.NaN;
+            //this.Mayer = double.NaN;  
+            //this.BtcIssuance = double.NaN;
+            //this.UsdIssuance = double.NaN;            
+            //this.MAusdIssuance = double.NaN;
+            //this.PuellMultiple = double.NaN;
+            //this.MA_365 = double.NaN;
+            //this.Price_52w = double.NaN;
+            //this.Return = double.NaN;
+            //this.Return_MA_365_1 = double.NaN;
+            //this.Return_365_STD = double.NaN;
+            //this.Sharpe = double.NaN;
+            //this.PowerLaw = double.NaN;
+            //this.Ind = 0;
+            //this.AVG = double.NaN;
 
         }
 
