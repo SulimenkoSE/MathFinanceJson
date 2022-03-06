@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static MathJson.ColumnAverage;
 
 namespace MathJson
 {
@@ -54,6 +55,37 @@ namespace MathJson
             //this.AVG = double.NaN;
 
         }
+
+        public double this[AvgIndicator indicator]
+        { 
+        get
+            {
+                switch (indicator)
+                {
+                    case AvgIndicator.Risk_MA_400:
+                        return this.MA_400;
+                    case AvgIndicator.PowerLaw:
+                        return this.PowerLaw;
+                    default:
+                        throw new NotImplementedException(nameof(AvgIndicator));
+                }                    
+            }
+            set
+            {
+                switch (indicator)
+                {
+                    case AvgIndicator.Risk_MA_400:
+                        this.MA_400 = value;
+                        break;
+                    case AvgIndicator.PowerLaw:
+                        this.PowerLaw = value;
+                        break;
+                    default:
+                        throw new NotImplementedException(nameof(AvgIndicator));
+                }
+            }
+        }
+
 
         public override bool Equals(object obj)
         {

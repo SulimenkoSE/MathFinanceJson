@@ -20,7 +20,7 @@ namespace MathFainanceJson
             List<MathDbKript> bts_usd_R = new List<MathDbKript>();
             
             // Чтение данных из фала
-            using (FileStream fs = new FileStream("H:/Projects/MathFinanceJson_0/MathFinanceJson/MathFinanceJson/Json_File/btc-usd_python.json", FileMode.Open))
+            using (FileStream fs = new FileStream("H:/Projects/MathFinanceJson/MathFinanceJson/MathFinanceJson/Json_File/btc-usd_python.json", FileMode.Open))
             {
                 //Создаем файл по данным из файла указаны только данные по торгам
                 List<KriptDbContext> bts_usd = await System.Text.Json.JsonSerializer.DeserializeAsync<List<KriptDbContext>>(fs);
@@ -112,7 +112,7 @@ namespace MathFainanceJson
                 csd.AVG(data: bts_usd_R);
 
                 //  Запишем данные в файл                 
-                using (FileStream fs_write = new FileStream("H:/Projects/MathFinanceJson_0/MathFinanceJson/MathFinanceJson/Json_File/btc_usd_sharp_00.json", FileMode.OpenOrCreate))
+                using (FileStream fs_write = new FileStream("H:/Projects/MathFinanceJson/MathFinanceJson/MathFinanceJson/Json_File/btc_usd_sharp_00.json", FileMode.OpenOrCreate))
                 {
                     //https://shikaku-sh.hatenablog.com/entry/c-sharp-how-to-support-json-nan-in-system-text-json
                     var options = new System.Text.Json.JsonSerializerOptions

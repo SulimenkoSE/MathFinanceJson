@@ -144,6 +144,7 @@ namespace MathJson
 
             //double result = double.IsNaN(predictedValue) ? 0 : (double)(Math.Log10(data[col_end].AdjClose - predictedValue));
             double result = (double)(Math.Log10(data[col_end].AdjClose) - predictedValue);
+            if (double.IsNaN(result)) result = yValues[col_end];
             return result;
         }
         public void NormalizationData(List<MathDbKript> data)
@@ -151,11 +152,15 @@ namespace MathJson
             double result = default;
             double[] cummin = { double.NaN, double.NaN, double.NaN, double.NaN, double.NaN, double.NaN };
             double[] cummax = { double.NaN, double.NaN, double.NaN, double.NaN, double.NaN, double.NaN };
-            string[] indicators = { "PuellMultiple", "Price_52w", "PowerLaw", "Sharpe", "Mayer", "Risk_MA_400" };
+            indicators = { "PuellMultiple", "Price_52w", "PowerLaw", "Sharpe", "Mayer", "Risk_MA_400" };
 
 
             for (int i = 0; i < data.Count; i++)
             {
+                ProcessIndicator(data, i, AvgIndicator.Mayer);
+                ProcessIndicator(data, i, AvgIndicator.PowerLaw);
+
+
                 ////Вычисляем PuellMultiple
                 if (!double.IsNaN(data[i].Risk_MA_400) && data[i].Risk_MA_400 != 0)
                 {
@@ -291,5 +296,55 @@ namespace MathJson
 
             }
         }
+
+
+        public void ProcessIndicator(IReadOnlyList<MathDbKript> data, int index, AvgIndicator indicator)
+        {
+            var legalValues = from value in data
+                              let marker = value[indicator]
+                              where marker != double.NaN
+                              where marker != 0
+                              where marker != double.PositiveInfinity
+                              select value;
+            
+            //Некотрые столбцы из общего набора столбцов
+            //select new
+            //{
+            //    mayer = value[AvgIndicator.Mayer],
+            //    other = value[AvgIndicator.PuellMultiple]
+            //};
+
+            var element = data[index];
+
+            var atLeastOne = index + 1;
+            var slice = legalValues.Skip(5Take(atLeastOne).ToArray(); 
+            var sliceMax = slice.Max(value => value[indicator]);
+            var sliceMin = slice.Min(value => value[indicator]);
+
+
+            var diff = (sliceMax - sliceMin);            
+            if (diff != 0)
+            {
+                element[indicator] = sliceMax / sliceMin;
+            }
+            else
+
+            {
+                
+            }
+               
+
+
+
+        }
+    }
+
+    public enum AvgIndicator
+    {
+        PuellMultiple,
+        PowerLaw,
+        Sharpe,
+        Risk_MA_400,
+        Mayer
     }
 }
