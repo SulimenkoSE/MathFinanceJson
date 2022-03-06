@@ -8,24 +8,28 @@ namespace MathJson
 {
     public class ColumnAverage
     {
-        public double Avarage(List<MathDbKript> data, int period, int col_end, int col_start = 0)
+        public double Avarage(List<MathDbKript> data, int period, int col_end, FieldsMathDbKript fieldsTable, int col_start = 0)
         {
-            double X_ = default;
-            double result = default;
-            int nan_Values = 0;
-
-            if (col_end == 0) return double.NaN;
+            double result = double.NaN;
+            var legalValues = from value in data
+                              let marker = value[fieldsTable]
+                              where marker != double.NaN
+                              where marker != double.PositiveInfinity
+                              select value;
+            //Полуаем елемент для обновления значения
+            var element = data[col_end];
+            // Определяем диапазон выборки
+            // if (col_end == 0) return double.NaN;
             if (col_end >= period) col_start = col_end - period;
-            //Считаем среднее знеачене по выборке 365 значений
-            for (int i = col_start; i < col_end; i++)
+            //Выбираем из набора данных только то что нам нужно с учетом диапазона выборки
+            var sampleData = legalValues.Skip(col_start).Take(col_end).ToArray();
+            //Опредеяем среднее значение по выборке
+            if (sampleData.Count() != 0)
             {
-                if (double.IsNaN(data[i].AdjClose)) nan_Values += 1;
-                else X_ += data[i].AdjClose;
-            }
-            if (col_end - col_start - nan_Values == 0) return double.NaN;
-            else result = X_ / (col_end - col_start - nan_Values);
-            return result;
+                result = sampleData.Average(value => value[fieldsTable]);
 
+            }
+            return result;
         }
         public double btcIssuance(List<MathDbKript> data, int col_end)
         {
@@ -152,7 +156,7 @@ namespace MathJson
             double result = default;
             double[] cummin = { double.NaN, double.NaN, double.NaN, double.NaN, double.NaN, double.NaN };
             double[] cummax = { double.NaN, double.NaN, double.NaN, double.NaN, double.NaN, double.NaN };
-            indicators = { "PuellMultiple", "Price_52w", "PowerLaw", "Sharpe", "Mayer", "Risk_MA_400" };
+            //indicators = { "PuellMultiple", "Price_52w", "PowerLaw", "Sharpe", "Mayer", "Risk_MA_400" };
 
 
             for (int i = 0; i < data.Count; i++)
@@ -256,43 +260,63 @@ namespace MathJson
 
         public void AVG(List<MathDbKript> data)
         {
-
-
-            string[] indicators = { "PuellMultiple", "PowerLaw", "Sharpe", "Risk_MA_400", "Mayer"};
+            //string[] indicators = { "PuellMultiple", "PowerLaw", "Sharpe", "Risk_MA_400", "Mayer"};
+            AvgIndicator indicator = new AvgIndicator();
+            var legalValues = from value in data
+                              let marker = value[indicator]
+                              where marker != double.NaN
+                              //where marker != 0
+                              where marker != double.PositiveInfinity
+                                  //select value;
+                                  //Некотрые столбцы из общего набора столбцов
+                              select new
+                              {
+                                  
+                                  puellMultiple = value[AvgIndicator.PuellMultiple],
+                                  powerLaw = value[AvgIndicator.PowerLaw],
+                                  sharpe = value[AvgIndicator.Sharpe],
+                                  risk_MA_400 = value[AvgIndicator.Risk_MA_400],
+                                  mayer = value[AvgIndicator.Mayer]
+                              };
+            
             double result = default;
             
+
             //Считаем среднее знеачене по строке
-            for (int i = 0; i < data.Count; i++)
+            for (int index = 0; index < data.Count; index++)
             {
                 double X_ = default;
-                int nan_Values = 0;
+                var element = data[index].AVG;
+                var slice = legalValues.Take(index).ToArray();
+                //var average = slice.Average(value =>value[indicator]);
+                //int nan_Values = 0;
 
-                if (!double.IsNaN(data[i].PuellMultiple) && data[i].PuellMultiple != double.PositiveInfinity) 
-                { 
-                    X_ = data[i].PuellMultiple;
-                    nan_Values += 1;
-                }
-                if (!double.IsNaN(data[i].PowerLaw))
-                {
-                    X_ = X_ + data[i].PowerLaw;
-                    nan_Values += 1;
-                }
-                if (!double.IsNaN(data[i].Sharpe))
-                {
-                    X_ = X_ + data[i].Sharpe;
-                    nan_Values += 1;
-                }                
-                if (!double.IsNaN(data[i].Risk_MA_400))
-                {
-                    X_ = X_ + data[i].Risk_MA_400;
-                    nan_Values += 1;
-                }
-                if (!double.IsNaN(data[i].Mayer))
-                {
-                    X_ = X_ + data[i].Mayer;
-                    nan_Values += 1;
-                }
-                if (nan_Values != 0) data[i].AVG = X_ / nan_Values;
+                //if (!double.IsNaN(data[i].PuellMultiple) && data[i].PuellMultiple != double.PositiveInfinity) 
+                //{ 
+                //    X_ = data[i].PuellMultiple;
+                //    nan_Values += 1;
+                //}
+                //if (!double.IsNaN(data[i].PowerLaw))
+                //{
+                //    X_ = X_ + data[i].PowerLaw;
+                //    nan_Values += 1;
+                //}
+                //if (!double.IsNaN(data[i].Sharpe))
+                //{
+                //    X_ = X_ + data[i].Sharpe;
+                //    nan_Values += 1;
+                //}                
+                //if (!double.IsNaN(data[i].Risk_MA_400))
+                //{
+                //    X_ = X_ + data[i].Risk_MA_400;
+                //    nan_Values += 1;
+                //}
+                //if (!double.IsNaN(data[i].Mayer))
+                //{
+                //    X_ = X_ + data[i].Mayer;
+                //    nan_Values += 1;
+                //}
+                //if (nan_Values != 0) data[i].AVG = X_ / nan_Values;
 
             }
         }
@@ -317,7 +341,7 @@ namespace MathJson
             var element = data[index];
 
             var atLeastOne = index + 1;
-            var slice = legalValues.Skip(5Take(atLeastOne).ToArray(); 
+            var slice = legalValues.Take(atLeastOne).ToArray(); 
             var sliceMax = slice.Max(value => value[indicator]);
             var sliceMin = slice.Min(value => value[indicator]);
 
@@ -332,10 +356,6 @@ namespace MathJson
             {
                 
             }
-               
-
-
-
         }
     }
 
@@ -346,5 +366,28 @@ namespace MathJson
         Sharpe,
         Risk_MA_400,
         Mayer
+    }
+    public enum FieldsMathDbKript
+    {
+        Index,
+        Date,
+        AdjClose,
+        MA_400,
+        Risk_MA_400,
+        MA_200,
+        Mayer,
+        BtcIssuance,
+        UsdIssuance,
+        MAusdIssuance,
+        PuellMultiple,
+        MA_365,
+        Price_52w,
+        Return,
+        Return_MA_365_1,
+        Return_365_STD,
+        Sharpe,
+        PowerLaw,
+        Ind,
+        AVG
     }
 }

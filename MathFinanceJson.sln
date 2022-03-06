@@ -3,11 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32203.90
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MathFinanceJson", "MathFinanceJson\MathFinanceJson.csproj", "{469F874C-235C-4E82-B749-0B81199E5CA8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MathFinanceJson", "MathFinanceJson\MathFinanceJson.csproj", "{469F874C-235C-4E82-B749-0B81199E5CA8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MathJson", "MathJson", "{23CD964E-52FA-4AAC-96E5-6A9A2F5AB9D4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MathJson", "MathJson\MathJson.csproj", "{9A65DDD5-8EE3-4D1E-BF78-5FB29A997569}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MathJson", "MathJson\MathJson.csproj", "{9A65DDD5-8EE3-4D1E-BF78-5FB29A997569}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{4CFB5616-919F-4B8A-8B79-C6C34F60960F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestProjectMathFinanceJson", "Tests\TestProjectMathFinanceJson\TestProjectMathFinanceJson.csproj", "{D6B011C7-23ED-4826-8A32-574671108A4C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,12 +27,17 @@ Global
 		{9A65DDD5-8EE3-4D1E-BF78-5FB29A997569}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9A65DDD5-8EE3-4D1E-BF78-5FB29A997569}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9A65DDD5-8EE3-4D1E-BF78-5FB29A997569}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6B011C7-23ED-4826-8A32-574671108A4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6B011C7-23ED-4826-8A32-574671108A4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6B011C7-23ED-4826-8A32-574671108A4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6B011C7-23ED-4826-8A32-574671108A4C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{9A65DDD5-8EE3-4D1E-BF78-5FB29A997569} = {23CD964E-52FA-4AAC-96E5-6A9A2F5AB9D4}
+		{D6B011C7-23ED-4826-8A32-574671108A4C} = {4CFB5616-919F-4B8A-8B79-C6C34F60960F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5D8F7057-56CC-4FF6-9D77-CE1A1E29095D}
