@@ -46,65 +46,79 @@ namespace MathFainanceJson
 
                     //400MA - 400MArisk
                     //csd.Avarage(data: bts_usd_R, 400, RowNewJson, FieldsMathDbKript.MA_400, bts_usd_R[RowNewJson].MA_400);
-
-
                     //bts_usd_R[RowNewJson].MA_400 = csd.Avarage(data: bts_usd_R, 400, RowNewJson);
+
+                    //400MA
                     bts_usd_R[RowNewJson].MA_400 = csd.Avarage(data: bts_usd_R, 400, RowNewJson, FieldsMathDbKript.AdjClose);
+
+                    //400MArisk
                     if (bts_usd_R[RowNewJson].MA_400 != 0 && !double.IsNaN(bts_usd_R[RowNewJson].MA_400))
                     {
                         bts_usd_R[RowNewJson].Risk_MA_400 = (double)(bts_usd_R[RowNewJson].AdjClose / bts_usd_R[RowNewJson].MA_400);
                     }
                     //Console.WriteLine($"Risk_MA_400 = {bts_usd_R[RowNewJson].Risk_MA_400}");
 
-                    //////200MA - Mayer
-                    //bts_usd_R[RowNewJson].MA_200 = csd.Avarage(data: bts_usd_R, 200, RowNewJson);
-                    //if (bts_usd_R[RowNewJson].MA_200 != 0)
-                    //{ 
-                    //    bts_usd_R[RowNewJson].Mayer = (double)(bts_usd_R[RowNewJson].AdjClose / bts_usd_R[RowNewJson].MA_200); 
-                    //}
+                    //200MA
+                    bts_usd_R[RowNewJson].MA_200 = csd.Avarage(data: bts_usd_R, 200, RowNewJson, FieldsMathDbKript.AdjClose);
 
-                    ////btcIssuance
-                    //bts_usd_R[RowNewJson].BtcIssuance = csd.btcIssuance(data: bts_usd_R, RowNewJson);
+                    //Mayer
+                    if (bts_usd_R[RowNewJson].MA_200 != 0 && !double.IsNaN(bts_usd_R[RowNewJson].MA_200))
+                    {
+                        bts_usd_R[RowNewJson].Mayer = (double)(bts_usd_R[RowNewJson].AdjClose / bts_usd_R[RowNewJson].MA_200);
+                    }
+                    //Console.WriteLine($"MA_200 = {bts_usd_R[RowNewJson].MA_200}");
 
-                    ////usdIssuance
-                    //bts_usd_R[RowNewJson].UsdIssuance = (double)(bts_usd_R[RowNewJson].BtcIssuance * bts_usd_R[RowNewJson].AdjClose);
+                    //btcIssuance
+                    bts_usd_R[RowNewJson].BtcIssuance = csd.btcIssuance(data: bts_usd_R, RowNewJson);
 
-                    ////MAusdIssuance
-                    //bts_usd_R[RowNewJson].MAusdIssuance = csd.usdIssuance(data: bts_usd_R, 365, RowNewJson);
+                    //usdIssuance
+                    bts_usd_R[RowNewJson].UsdIssuance = (double)(bts_usd_R[RowNewJson].BtcIssuance * bts_usd_R[RowNewJson].AdjClose);
 
-                    ////PuellMultiple
-                    //bts_usd_R[RowNewJson].PuellMultiple = (double)(bts_usd_R[RowNewJson].UsdIssuance / bts_usd_R[RowNewJson].MAusdIssuance);
 
-                    ////365MA - Price_52w 
-                    //bts_usd_R[RowNewJson].MA_365 = csd.Avarage(data: bts_usd_R, 365, RowNewJson);
+                    //MAusdIssuance
+                    bts_usd_R[RowNewJson].MAusdIssuance = csd.Avarage(data: bts_usd_R, 365, RowNewJson, FieldsMathDbKript.UsdIssuance);
+
+                    //PuellMultiple
+                    bts_usd_R[RowNewJson].PuellMultiple = (double)(bts_usd_R[RowNewJson].UsdIssuance / bts_usd_R[RowNewJson].MAusdIssuance);
+
+                    //365MA 
+                    bts_usd_R[RowNewJson].MA_365 = csd.Avarage(data: bts_usd_R, 365, RowNewJson, FieldsMathDbKript.AdjClose);
+                    //Console.WriteLine($"MA_365 = {bts_usd_R[RowNewJson].MA_365}");
+
+                    //Price_52w 
+                    if (bts_usd_R[RowNewJson].MA_365 != 0 && !double.IsNaN(bts_usd_R[RowNewJson].MA_365))
+                    {
+                        bts_usd_R[RowNewJson].Price_52w = (double)(bts_usd_R[RowNewJson].AdjClose / bts_usd_R[RowNewJson].MA_365);
+                    }
+                    //Console.WriteLine($"Price_52w = {bts_usd_R[RowNewJson].Price_52w}");
 
                     ////Price52W
                     //if (bts_usd_R[RowNewJson].MA_365 != 0) bts_usd_R[RowNewJson].Price_52w = (double)(bts_usd_R[RowNewJson].AdjClose / bts_usd_R[RowNewJson].MA_365);
                     //else bts_usd_R[RowNewJson].Price_52w = 0;
 
-                    ////Return
-                    //bts_usd_R[RowNewJson].Return = csd.ReturnPersant(data: bts_usd_R, RowNewJson);
+                    //Return
+                    bts_usd_R[RowNewJson].Return = csd.ReturnPersant(data: bts_usd_R, RowNewJson);
 
-                    ////365Return%MA-1
-                    //bts_usd_R[RowNewJson].Return_MA_365_1 = csd.Return_365_MA_1(data: bts_usd_R, 365, RowNewJson);
+                    //365Return%MA-1
+                    bts_usd_R[RowNewJson].Return_MA_365_1 = csd.Avarage(data: bts_usd_R, 365, RowNewJson, FieldsMathDbKript.Return) -1;
 
-                    ////365Return%STD
-                    //bts_usd_R[RowNewJson].Return_365_STD = csd.Return_365_STD(data: bts_usd_R, RowNewJson);
+                    //365Return%STD
+                    bts_usd_R[RowNewJson].Return_365_STD = csd.Return_365_STD(data: bts_usd_R, RowNewJson);
 
-                    ////Shape
-                    //// ++++++++++++Проверить данные
-                    //if (bts_usd_R[RowNewJson].Return_365_STD != 0)
-                    //{
-                    //    bts_usd_R[RowNewJson].Sharpe = (double)(bts_usd_R[RowNewJson].Return_MA_365_1 / 
-                    //                                            bts_usd_R[RowNewJson].Return_365_STD);
-                    //}
+                    //Shape
+                    // ++++++++++++Проверить данные
+                    if (bts_usd_R[RowNewJson].Return_365_STD != 0 && !double.IsNaN(bts_usd_R[RowNewJson].Return_365_STD))
+                    {
+                        bts_usd_R[RowNewJson].Sharpe = (double)(bts_usd_R[RowNewJson].Return_MA_365_1 /
+                                                                bts_usd_R[RowNewJson].Return_365_STD);
+                    }
                     //else bts_usd_R[RowNewJson].Sharpe = 0;
 
-                    ////ind
-                    //bts_usd_R[RowNewJson].Ind = RowNewJson + 947;
+                    //ind
+                    bts_usd_R[RowNewJson].Ind = RowNewJson + 947;
 
-                    ////PowerLaw
-                    //bts_usd_R[RowNewJson].PowerLaw = csd.PoweLaw(data: bts_usd_R, RowNewJson);
+                    //PowerLaw
+                    bts_usd_R[RowNewJson].PowerLaw = csd.PoweLaw(data: bts_usd_R, RowNewJson);
 
                     if (RowNewJson == 5) break;
                 }
