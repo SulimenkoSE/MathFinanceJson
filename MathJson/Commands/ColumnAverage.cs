@@ -20,15 +20,15 @@ namespace MathJson
                 double result = double.NaN;
                 var legalValues = from value in data
                                   let marker = value[fieldsTable]
-                                  where marker != double.NaN
-                                  where marker != double.PositiveInfinity
+                                  where !double.IsNaN(marker)
+                                  where !double.IsPositiveInfinity(marker)
                                   select marker;
                 // Определяем диапазон выборки
                 if (col_end >= period) col_start = col_end - period;
                 //Выбираем из набора данных только то что нам нужно с учетом диапазона выборки
                 var sampleData = legalValues.Skip(col_start).Take(col_end).ToArray();
                 //Опредеяем среднее значение по выборке
-                if (sampleData.Any())
+                if (sampleData.Count() != 0)
                 {
                     result = sampleData.Average();//value => value[fieldsTable]
                 }
@@ -42,9 +42,13 @@ namespace MathJson
             double Result = 0;
 
             btc = Math.Floor(data[col_end].Index / 1458.00);
-            btcVal = (double)Math.Pow(2, btc);
+            btcVal = (double)Math.Pow(2, btc);            
+            if (double.IsInfinity(btcVal))
+            {
+                //return double.NaN;
+                throw new ArgumentOutOfRangeException($"Reqvested ven data[col_end].Index >= {data[col_end].Index}");
+            }
             Result = 7200 / btcVal;
-
             return Result;
         }
         //public double usdIssuance(List<MathDbKript> data, int period, int col_end, int col_start = 0)
@@ -66,50 +70,90 @@ namespace MathJson
 
         public double ReturnPersant(List<MathDbKript> data, int col_end)
         {
-            double result = default;
-            if (col_end == 0) return double.NaN;
-            result = (double)((data[col_end].AdjClose / data[col_end - 1].AdjClose) - 1) * 100;
-            return result;
+            double result = double.NaN;
+            if (col_end == 0) return result;
+
+            if (data.Count <= col_end || data.Count ==0)
+            {
+                //return double.NaN;
+                throw new ArgumentOutOfRangeException($"{col_end} reqvested ven total {data.Count}");
+            }
+            else
+            {
+                result = 0;
+                //Выбираем из набора данных только то что нам нужно с учетом диапазона выборки
+                var legalValues = from value in data
+                                  let marker = value[FieldsMathDbKript.AdjClose]
+                                  where !double.IsNaN(marker)
+                                  where !double.IsPositiveInfinity(marker)
+                                  select marker;
+
+                var returnData = legalValues.Skip(col_end -1).Take(col_end).ToArray();
+
+                if (returnData.Count() > 1 )
+                {
+                    result = (double)((returnData[returnData.Count()-1] / returnData[returnData.Count() - 1]) - 1) * 100;
+                }
+
+                //if (data[col_end - 1].AdjClose != 0)
+                //{
+                //    result = (double)((data[col_end].AdjClose / data[col_end - 1].AdjClose) - 1) * 100;
+                //}                
+                return result;
+            }
         }
 
-        public double Return_365_MA_1(List<MathDbKript> data, int period, int col_end, int col_start = 0)
+        public double Return_365_STD(List<MathDbKript> data, int period, int col_end, FieldsMathDbKript fieldsTable, int col_start = 0)
         {
             double X_ = default;
-            double result = default;
-            int nan_Values = 0;
+            double result = double.NaN;
 
-            if (col_end == 0) return double.NaN;
+            //Если равны то в знаменателе 0 поэтому выходим
+            if (col_end == col_start) return result;
 
-            if (col_end >= period) col_start = col_end - period;
-            //Считаем среднее знеачене по выборке 365 значений
-            for (int i = col_start; i < col_end; i++)
+            //А вдруг пустой объект или data.Count <= col_end
+            if (data.Count <= col_end || data.Count == 0)
             {
-                if (double.IsNaN(data[i].Return)) nan_Values += 1;
-                else X_ += data[i].Return;
+                //return double.NaN;
+                throw new ArgumentOutOfRangeException($"{col_end} reqvested ven total {data.Count}");
             }
-            if (col_end - col_start - nan_Values == 0) return double.NaN;
-            else result = X_ / (col_end - col_start - nan_Values) - 1;
-            return result;
-        }
+            else
+            {                
+                // Определяем диапазон выборки
+                if (col_end >= period) col_start = col_end - period;
 
-        public double Return_365_STD(List<MathDbKript> data, int col_end, int col_start = 0)
-        {
-            double X_ = default;
-            double Y_ = default;
-            double result = default;
-            
-            //Считаем среднее знеачене по выборке 365 значений
-            X_ = Avarage(data: data, 365, col_end, FieldsMathDbKript.Return);
-            //Вычисляем сумму квадратов
-            for (int i = col_start; i < col_end; i++)
-            {
-                // опрделяется ка разница между значением Return и полученным средним значением по всему столбцу 
-                // в указанном диапазоне
-                if (!double.IsNaN(data[i].Return)) Y_ += (double)Math.Pow((double)(data[i].Return - X_), 2);
+                //Считаем среднее знеачене по выборке 365 значений
+                X_ = Avarage(data: data, 365, col_end, fieldsTable);
+                // Вдруг имеем double.NaN
+                if (!double.IsNaN(X_))
+                {
+                    //Выбираем из набора данных только то что нам нужно с учетом диапазона выборки
+                    var legalValues = from value in data
+                                    let marker = value[fieldsTable]
+                                    where !double.IsNaN(marker)
+                                    where !double.IsPositiveInfinity(marker)
+                                    select (double)Math.Pow((double)(marker - X_), 2);
+                
+                    var returnData = legalValues.Skip(col_start).Take(col_end).ToArray();
+                
+                    if (returnData.Count() - col_start > 0)
+                    {    
+                        result = (double)Math.Sqrt((double)(returnData.Sum() / (returnData.Count() - col_start)));
+                    }
+                }
+                
+                return result;
             }
-            result = (double)Math.Sqrt((double)(Y_ / (col_end - col_start)));
-
-            return result;
+            ////Считаем среднее знеачене по выборке 365 значений
+            //X_ = Avarage(data: data, 365, col_end, FieldsMathDbKript.Return);
+            ////Вычисляем сумму квадратов
+            //for (int i = col_start; i < col_end; i++)            {
+            //    // опрделяется ка разница между значением Return и полученным средним значением по всему столбцу 
+            //    // в указанном диапазоне
+            //    if (!double.IsNaN(data[i].Return)) Y_ += (double)Math.Pow((double)(data[i].Return - X_), 2);
+            //}
+            //result = (double)Math.Sqrt((double)(Y_ / (col_end - col_start)));
+            //return result;
         }
 
 

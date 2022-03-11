@@ -103,7 +103,7 @@ namespace MathFainanceJson
                     bts_usd_R[RowNewJson].Return_MA_365_1 = csd.Avarage(data: bts_usd_R, 365, RowNewJson, FieldsMathDbKript.Return) -1;
 
                     //365Return%STD
-                    bts_usd_R[RowNewJson].Return_365_STD = csd.Return_365_STD(data: bts_usd_R, RowNewJson);
+                    bts_usd_R[RowNewJson].Return_365_STD = csd.Return_365_STD(data: bts_usd_R, 365, RowNewJson, FieldsMathDbKript.Return);
 
                     //Shape
                     // ++++++++++++Проверить данные
