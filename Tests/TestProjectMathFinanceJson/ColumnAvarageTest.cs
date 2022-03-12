@@ -62,7 +62,7 @@ namespace TestProjectMathFinanceJson
 
             yield return new object[]{ new List<MathDbKript>
                    {
-                        new MathDbKript( 0, "2013-02-01 00:00:00", 21.10),
+                        new MathDbKript( 0, "2013-02-01 00:00:00", 21.10){Return = 12.235 },
                         new MathDbKript( 1, "2013-02-02 00:00:00", -21.10),
                         new MathDbKript( 2, "2013-02-03 00:00:00", double.NaN),
                         new MathDbKript( 3, "2013-02-04 00:00:00", 21.10),
@@ -150,7 +150,7 @@ namespace TestProjectMathFinanceJson
             var sut = new ColumnAverage();
             var result = sut.btcIssuance(data, 0);
             //результатом еcть возврат results
-            result.Should().Be(results);
+            result.Should().BeApproximately(results, 3);
         }
 
         [Trait("ReturnPersant", "NaN")]

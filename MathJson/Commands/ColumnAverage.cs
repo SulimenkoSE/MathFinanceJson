@@ -51,23 +51,7 @@ namespace MathJson
             Result = 7200 / btcVal;
             return Result;
         }
-        //public double usdIssuance(List<MathDbKript> data, int period, int col_end, int col_start = 0)
-        //{
-        //    double result = default;
-
-        //    if (col_end >= period) col_start = col_end - period;
-        //    else period = col_end;
-
-        //    if (col_end == 0) return 0;
-        //    if (col_end == 1) period = 1;
-
-        //    for (int i = col_start; i < col_end; i++)
-        //    {
-        //        result += data[i].UsdIssuance;
-        //    }
-        //    return result / period;
-        //}
-
+        
         public double ReturnPersant(List<MathDbKript> data, int col_end)
         {
             double result = double.NaN;
@@ -93,12 +77,7 @@ namespace MathJson
                 if (returnData.Count() > 1 )
                 {
                     result = (double)((returnData[returnData.Count()-1] / returnData[returnData.Count() - 1]) - 1) * 100;
-                }
-
-                //if (data[col_end - 1].AdjClose != 0)
-                //{
-                //    result = (double)((data[col_end].AdjClose / data[col_end - 1].AdjClose) - 1) * 100;
-                //}                
+                }               
                 return result;
             }
         }
