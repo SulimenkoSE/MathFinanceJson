@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using static MathJson.ColumnAverage;
@@ -29,8 +30,30 @@ namespace MathJson
         public double Sharpe { get; set; }
         public int Ind { get; set; }
         public double PowerLaw { get; set; }
-        public double AVG { get; set; }            
-        //public MathDbKript() { }
+        public double AVG { get; set; }
+        
+        [OnDeserialized]
+        private void OnDeserialized(StreamingContext context)
+        {
+            if (double.IsNaN(MA_400)) MA_400 = double.NaN;
+            if (double.IsNaN(Risk_MA_400)) Risk_MA_400 = double.NaN;
+            if (double.IsNaN(MA_200)) MA_200 = double.NaN;
+            if (double.IsNaN(Mayer)) Mayer = double.NaN;
+            if (double.IsNaN(BtcIssuance)) BtcIssuance = double.NaN;
+            if (double.IsNaN(UsdIssuance)) UsdIssuance = double.NaN;
+            if (double.IsNaN(MAusdIssuance)) MAusdIssuance = double.NaN;
+            if (double.IsNaN(PuellMultiple)) PuellMultiple = double.NaN;
+            if (double.IsNaN(MA_365)) MA_365 = double.NaN;
+            if (double.IsNaN(Price_52w)) Price_52w = double.NaN;
+            if (double.IsNaN(Return)) Return = double.NaN;
+            if (double.IsNaN(Return_MA_365_1)) Return_MA_365_1 = double.NaN;
+            if (double.IsNaN(Return_365_STD)) Return_365_STD = double.NaN;
+            if (double.IsNaN(Sharpe)) Sharpe = double.NaN;
+            if (double.IsNaN(Ind)) Ind = 0;
+            if (double.IsNaN(PowerLaw)) PowerLaw = double.NaN;
+            if (double.IsNaN(AVG)) AVG = double.NaN;
+        }
+
         public MathDbKript(int index, string date, double adjClose)
         {
             this.Index = index;

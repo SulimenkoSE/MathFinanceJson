@@ -136,42 +136,56 @@ namespace MathJson
         }
 
 
-        public double PoweLaw(List<MathDbKript> data, int col_end)
+        public void PoweLaw(List<MathDbKript> data)
         {
 
-            //Вычисляем xValues
-            double[] xValues = new double[col_end + 1];
-            //xValues[0] = 0;
-            double[] yValues = new double[col_end + 1];
-            //yValues[0] = 0;
+            ////Вычисляем xValues
+            //double[] xValues = new double[data.Count()];
+            ////xValues[0] = 0;
+            //double[] yValues = new double[data.Count()];
+            ////yValues[0] = 0;
 
-            for (int i = 0; i < col_end + 1; i++)
+            for (int i = 0; i < data.Count() ; i++)
             {
                 //Вычисляем xValues
-                xValues[i] = Math.Log10(data[i].Ind);
-                //Вычисляем yValues
-                yValues[i] = Math.Log10(data[i].AdjClose);
+                double[] xValues = new double[i+1];
+                //xValues[0] = 0;
+                double[] yValues = new double[i+1];
+                //yValues[0] = 0;
+
+                for (int j = 0; j < i + 1; j++)
+                {
+                        //Вычисляем xValues
+                        xValues[j] = Math.Log10(data[j].Ind);
+                        //Вычисляем yValues
+                        yValues[j] = Math.Log10(data[j].AdjClose);
+                                        
+                }
+
+                if (i > 0 && i< data.Count())
+                {
+                    //Линейниая регрессия
+                    double rSquared, intercept, slope;
+                    LinearRegression rS = new LinearRegression();
+                    rS.LinearRegressions(xValues, yValues, out rSquared, out intercept, out slope);
+
+                    var predictedValue = (slope * Math.Log10(data[i].Ind)) + intercept; //посленее значение по оси xValues
+                    //Console.WriteLine($"PredictionValue: {predictedValue}");
+                    data[i - 1].PowerLaw = (double)(Math.Log10(data[i-1].AdjClose) - predictedValue);
+                    //double result = double.IsNaN(predictedValue) ? 0 : (double)(Math.Log10(data[col_end].AdjClose - predictedValue));
+                    //double result = (double)(Math.Log10(data[i-1].AdjClose) - predictedValue);
+                    //if (double.IsNaN(result)) result = yValues[i];                
+                }
             }
-
-
-            //Линейниая регрессия
-            double rSquared, intercept, slope;
-            LinearRegression rS = new LinearRegression();
-            rS.LinearRegressions(xValues, yValues, out rSquared, out intercept, out slope);
-
-            var predictedValue = (slope * Math.Log10(data[col_end].Ind)) + intercept; //посленее значение по оси xValues
-            //Console.WriteLine($"PredictionValue: {predictedValue}");
-
-            //double result = double.IsNaN(predictedValue) ? 0 : (double)(Math.Log10(data[col_end].AdjClose - predictedValue));
-            double result = (double)(Math.Log10(data[col_end].AdjClose) - predictedValue);
-            if (double.IsNaN(result)) result = yValues[col_end];
-            return result;
         }
         public void NormalizationData(List<MathDbKript> data)
         {
+            double sliceMin = default;
+            double sliceMax = default;
             for (int i = 0; i < data.Count; i++)
             {
                 ProcessIndicator(data, i, FieldsMathDbKript.PuellMultiple);
+                //if (sliceMax - sliceMin !=0)  data[i].PuellMultiple =  (data[i].PuellMultiple - sliceMin) / (sliceMax - sliceMin);
                 //ProcessIndicator(data, i, FieldsMathDbKript.Price_52w);
                 //ProcessIndicator(data, i, FieldsMathDbKript.PowerLaw);
                 //ProcessIndicator(data, i, FieldsMathDbKript.Sharpe);
@@ -180,7 +194,7 @@ namespace MathJson
 
             }
 
-            
+
             //    //Вычисляем Risk_MA_400
             //    if (!double.IsNaN(data[i].Risk_MA_400) && data[i].Risk_MA_400 != 0)
             //    {
@@ -198,33 +212,26 @@ namespace MathJson
             //}
         }
         
-        public void ProcessIndicator(IReadOnlyList<MathDbKript> data, int index, FieldsMathDbKript indicator)
+        public void ProcessIndicator(List<MathDbKript> data, int index, FieldsMathDbKript indicator)
         {
+            double sliceMin = default;
+            double sliceMax = default;
+
             var legalValues = from value in data
                               let marker = value[indicator]
                               where !double.IsNaN(marker)
-                              //where marker != 0
-                              where marker != double.PositiveInfinity
-                              //select value;
-                              select new
-                              {
-                                  value = marker
-                              };
+                              where marker != 0
+                              where !double.IsPositiveInfinity(marker)
+                              select marker;
 
-            //var element = data[index];
-
-            //var atLeastOne = index + 1;
-            var slice = legalValues.Skip(index - 1).Take(index).ToList();
+            var slice = legalValues.Skip(0).Take(index).ToList();
+            var element = data[index];
             if (slice.Count() != 0) 
             {
-                //var sliceMax = slice.Max();
-                //var sliceMax = 0;
-                //var sliceMin = slice.Min(value => value[indicator]);
-                //Console.WriteLine($"index = {index}, indicator = {indicator}, sliceMin = {sliceMin}, sliceMax = {sliceMax}"); 
-            }
-
-
-
+                sliceMax = slice.Max();
+                sliceMin = slice.Min();
+                if (sliceMax - sliceMin != 0) element[indicator] = (element[indicator] - sliceMin) / (sliceMax - sliceMin);
+            }      
             //var diff = (sliceMax - sliceMin);            
             //if (diff != 0)
             //{
@@ -242,11 +249,10 @@ namespace MathJson
             AvgIndicator indicator = new AvgIndicator();
             var legalValues = from value in data
                               let marker = value[indicator]
-                              where marker != double.NaN
+                              where  ! double.IsNaN(marker)
                               //where marker != 0
-                              where marker != double.PositiveInfinity
-                                  //select value;
-                                  //Некотрые столбцы из общего набора столбцов
+                              where  !double.IsPositiveInfinity(marker)
+                              //Некотрые столбцы из общего набора столбцов
                               select new
                               {
                                   
@@ -266,36 +272,6 @@ namespace MathJson
                 double X_ = default;
                 var element = data[index].AVG;
                 var slice = legalValues.Take(index).ToArray();
-                //var average = slice.Average(value =>value[indicator]);
-                //int nan_Values = 0;
-
-                //if (!double.IsNaN(data[i].PuellMultiple) && data[i].PuellMultiple != double.PositiveInfinity) 
-                //{ 
-                //    X_ = data[i].PuellMultiple;
-                //    nan_Values += 1;
-                //}
-                //if (!double.IsNaN(data[i].PowerLaw))
-                //{
-                //    X_ = X_ + data[i].PowerLaw;
-                //    nan_Values += 1;
-                //}
-                //if (!double.IsNaN(data[i].Sharpe))
-                //{
-                //    X_ = X_ + data[i].Sharpe;
-                //    nan_Values += 1;
-                //}                
-                //if (!double.IsNaN(data[i].Risk_MA_400))
-                //{
-                //    X_ = X_ + data[i].Risk_MA_400;
-                //    nan_Values += 1;
-                //}
-                //if (!double.IsNaN(data[i].Mayer))
-                //{
-                //    X_ = X_ + data[i].Mayer;
-                //    nan_Values += 1;
-                //}
-                //if (nan_Values != 0) data[i].AVG = X_ / nan_Values;
-
             }
         }
 

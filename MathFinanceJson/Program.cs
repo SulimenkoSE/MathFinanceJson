@@ -18,13 +18,26 @@ namespace MathFainanceJson
 
             //Создаем новый рассчетный файл данных
             List<MathDbKript> bts_usd_R = new List<MathDbKript>();
-            
+            //Создаем рассчетный файл данных
+            List<MathDbKript> bts_usd_R_400MA = new List<MathDbKript>();
             // Чтение данных из фала
-            using (FileStream fs = new FileStream("H:/Projects/MathFinanceJson/MathFinanceJson/MathFinanceJson/Json_File/btc-usd_python.json", FileMode.Open))
+            using (FileStream fs = new FileStream("C:/2021/VS2022/MathFinanceJson/MathFinanceJson/Json_File/btc-usd_python_400MA.json", FileMode.Open)) //C:\2021\VS2022\MathFinanceJson\MathFinanceJson\Json_File
+            {
+                var options = new System.Text.Json.JsonSerializerOptions
+                {
+                    NumberHandling = System.Text.Json.Serialization.JsonNumberHandling.AllowNamedFloatingPointLiterals
+                };
+                //Создаем файл по данным из файла указаны только данные по торгам
+                List<MathDbKript> bts_usd_400MA = await System.Text.Json.JsonSerializer.DeserializeAsync<List<MathDbKript>>(fs, options);
+                await fs.DisposeAsync();
+            }
+                //using (FileStream fs = new FileStream("H:/Projects/MathFinanceJson/MathFinanceJson/MathFinanceJson/Json_File/btc-usd_python.json", FileMode.Open))
+                using (FileStream fs = new FileStream("C:/2021/VS2022/MathFinanceJson/MathFinanceJson/Json_File/btc-usd_python.json", FileMode.Open)) //C:\2021\VS2022\MathFinanceJson\MathFinanceJson\Json_File
             {
                 //Создаем файл по данным из файла указаны только данные по торгам
                 List<KriptDbContext> bts_usd = await System.Text.Json.JsonSerializer.DeserializeAsync<List<KriptDbContext>>(fs);
                 await fs.DisposeAsync();
+
                 //Занимаемся рассчетами
 
                 foreach (var index in bts_usd)
@@ -115,14 +128,12 @@ namespace MathFainanceJson
                     //else bts_usd_R[RowNewJson].Sharpe = 0;
 
                     //ind
-                    bts_usd_R[RowNewJson].Ind = RowNewJson + 947;
-
-                    //PowerLaw
-                    bts_usd_R[RowNewJson].PowerLaw = csd.PoweLaw(data: bts_usd_R, RowNewJson);
+                    bts_usd_R[RowNewJson].Ind = RowNewJson + 947;                    
 
                     if (RowNewJson == 5) break;
                 }
-
+                //PowerLaw
+                csd.PoweLaw(data: bts_usd_R);
                 //произведем нормализацию данных после рассчета
                 csd.NormalizationData(data: bts_usd_R);
 
@@ -130,7 +141,8 @@ namespace MathFainanceJson
                 csd.AVG(data: bts_usd_R);
 
                 //  Запишем данные в файл                 
-                using (FileStream fs_write = new FileStream("H:/Projects/MathFinanceJson/MathFinanceJson/MathFinanceJson/Json_File/btc_usd_sharp_00.json", FileMode.OpenOrCreate))
+                //using (FileStream fs_write = new FileStream("H:/Projects/MathFinanceJson/MathFinanceJson/MathFinanceJson/Json_File/btc_usd_sharp_00.json", FileMode.OpenOrCreate))
+                using (FileStream fs_write = new FileStream("C:/2021/VS2022/MathFinanceJson/MathFinanceJson/Json_File/btc_usd_sharp_00.json", FileMode.OpenOrCreate))
                 {
                     //https://shikaku-sh.hatenablog.com/entry/c-sharp-how-to-support-json-nan-in-system-text-json
                     var options = new System.Text.Json.JsonSerializerOptions
