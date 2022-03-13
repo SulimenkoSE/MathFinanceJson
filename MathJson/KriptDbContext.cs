@@ -17,9 +17,10 @@ namespace MathJson
         public double Close { get; set; }
         public double AdjClose { get; set; }
         public double Volume { get; set; }
-        //public KriptDbContext() { 
-        
-        //}
+        public KriptDbContext()
+        {
+
+        }
         public KriptDbContext(int index, string date,  double adjClose,
                 double volume)
         {
