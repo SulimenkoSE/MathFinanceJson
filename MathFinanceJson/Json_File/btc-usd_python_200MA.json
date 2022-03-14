@@ -3,10 +3,10 @@
         "Index": 949,
         "Date": "2011-08-09 00:00:00",
         "AdjClose": 9.66,
-        "MA_400": NaN,
-        "Risk_MA_400": NaN,
-        "MA_200": NaN,
-        "Mayer": NaN
+        "MA_400": "NaN",
+        "Risk_MA_400": "NaN",
+        "MA_200": "NaN",
+        "Mayer": "NaN"
     },
     {
         "Index": 950,

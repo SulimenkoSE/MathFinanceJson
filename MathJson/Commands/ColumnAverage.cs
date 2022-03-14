@@ -24,7 +24,8 @@ namespace MathJson
                                   where !double.IsPositiveInfinity(marker)
                                   select marker;
                 // Определяем диапазон выборки
-                if (col_end >= period) col_start = col_end - period;
+                if (col_end < period) col_start = 0;
+                else col_start = col_end - period;
                 //Выбираем из набора данных только то что нам нужно с учетом диапазона выборки
                 var sampleData = legalValues.Skip(col_start).Take(col_end).ToArray();
                 //Опредеяем среднее значение по выборке

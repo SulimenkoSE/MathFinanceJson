@@ -85,20 +85,20 @@ namespace MathFainanceJson
             List<MathDbKript> bts_usd_R = new List<MathDbKript>();
             
             //Создаем рассчетный файл данных 4000MA
-            List<MathDbKript> bts_usd_R_400MA = new List<MathDbKript>();
-            
             // Чтение данных из файла создано для проверки рассчетов
-            bts_usd_R_400MA = await DeserializeJson<List<MathDbKript>>("H:/Projects/MathFinanceJson/MathFinanceJson/MathFinanceJson/Json_File/btc-usd_python_400MA.json"); 
+            //List<MathDbKript> bts_usd_R_400MA = await DeserializeJson<List<MathDbKript>>("H:/Projects/MathFinanceJson/MathFinanceJson/MathFinanceJson/Json_File/btc-usd_python_400MA.json");
+            List<MathDbKript> bts_usd_R_400MA = await DeserializeJson<List<MathDbKript>>("C:/2021/VS2022/MathFinanceJson/MathFinanceJson/Json_File/btc-usd_python_200MA.json");
 
             //Создаем файл по данным из файла указаны только данные по торгам
-            List<KriptDbContext> bts_usd = await DeserializeJson<List<KriptDbContext>>("H:/Projects/MathFinanceJson/MathFinanceJson/MathFinanceJson/Json_File/btc-usd_python.json");
+            //List<KriptDbContext> bts_usd = await DeserializeJson<List<KriptDbContext>>("H:/Projects/MathFinanceJson/MathFinanceJson/MathFinanceJson/Json_File/btc-usd_python.json");
+            List<KriptDbContext> bts_usd = await DeserializeJson<List<KriptDbContext>>("C:/2021/VS2022/MathFinanceJson/MathFinanceJson/Json_File/btc-usd_python.json");
 
             //Занимаемся рассчетами исходя из полученных данных из файла btc-usd_python.json
             //Расчитанные данные записываем в файл btc_usd_sharp_00.json
             foreach (var index in bts_usd)
             {
                 int RowNewJson = index.Index;
-                Console.WriteLine($"Index: {RowNewJson}");
+                
 
                 //Скопируем в рассчетный файл данные которые используем в расчетах
                 // Это значения по закрытию дня 
@@ -112,18 +112,29 @@ namespace MathFainanceJson
 
                 ));
 
+                //Console.WriteLine($"Index: {RowNewJson + 947}  data_r {bts_usd_R[RowNewJson].Date} data_200  {bts_usd_R_400MA[RowNewJson].Date}");
+                Console.WriteLine($"{bts_usd_R[RowNewJson].AdjClose}");
+
+
                 //400MA
                 bts_usd_R[RowNewJson].MA_400 = csd.Avarage(data: bts_usd_R, 400, RowNewJson, FieldsMathDbKript.AdjClose);
+                //Выполним проверку расчетногo значения 
+                //if (bts_usd_R[RowNewJson].MA_400 != bts_usd_R_400MA[RowNewJson].MA_400) Console.WriteLine($"MA_400 = {bts_usd_R[RowNewJson].MA_400}  а должно быть {bts_usd_R_400MA[RowNewJson].MA_400}");
+
 
                 //400MArisk
                 if (bts_usd_R[RowNewJson].MA_400 != 0 && !double.IsNaN(bts_usd_R[RowNewJson].MA_400))
                 {
                     bts_usd_R[RowNewJson].Risk_MA_400 = (double)(bts_usd_R[RowNewJson].AdjClose / bts_usd_R[RowNewJson].MA_400);
                 }
-                //Console.WriteLine($"Risk_MA_400 = {bts_usd_R[RowNewJson].Risk_MA_400}");
+                //Выполним проверку расчетногo значения 
+                if (bts_usd_R[RowNewJson].Risk_MA_400 != bts_usd_R_400MA[RowNewJson].Risk_MA_400) Console.WriteLine($"Risk_MA_400 = {bts_usd_R[RowNewJson].Risk_MA_400}");
 
                 //200MA
                 bts_usd_R[RowNewJson].MA_200 = csd.Avarage(data: bts_usd_R, 200, RowNewJson, FieldsMathDbKript.AdjClose);
+                //Выполним проверку расчетногo значения 
+                //if (bts_usd_R[RowNewJson].MA_200 != bts_usd_R_400MA[RowNewJson].MA_200) Console.WriteLine($"MA_400 = {bts_usd_R[RowNewJson].MA_200}  а должно быть {bts_usd_R_400MA[RowNewJson].MA_200}");
+
 
                 //Mayer
                 if (bts_usd_R[RowNewJson].MA_200 != 0 && !double.IsNaN(bts_usd_R[RowNewJson].MA_200))
@@ -164,7 +175,7 @@ namespace MathFainanceJson
                 bts_usd_R[RowNewJson].Return = csd.ReturnPersant(data: bts_usd_R, RowNewJson);
 
                 //365Return%MA-1
-                bts_usd_R[RowNewJson].Return_MA_365_1 = csd.Avarage(data: bts_usd_R, 365, RowNewJson, FieldsMathDbKript.Return) -1;
+                bts_usd_R[RowNewJson].Return_MA_365_1 = csd.Avarage(data: bts_usd_R, 365, RowNewJson, FieldsMathDbKript.Return) - 1;
 
                 //365Return%STD
                 bts_usd_R[RowNewJson].Return_365_STD = csd.Return_365_STD(data: bts_usd_R, 365, RowNewJson, FieldsMathDbKript.Return);
@@ -179,9 +190,9 @@ namespace MathFainanceJson
                 //else bts_usd_R[RowNewJson].Sharpe = 0;
 
                 //ind
-                bts_usd_R[RowNewJson].Ind = RowNewJson + 947;                    
+                bts_usd_R[RowNewJson].Ind = RowNewJson + 947;
 
-                if (RowNewJson == 5) break;
+                if (RowNewJson == 407) break;
             }
             //PowerLaw
             csd.PoweLaw(data: bts_usd_R);
@@ -192,7 +203,8 @@ namespace MathFainanceJson
             csd.AVG(data: bts_usd_R);
 
             //  Запишем данные в файл
-            await SerializeJson<List<MathDbKript>>("H:/Projects/MathFinanceJson/MathFinanceJson/MathFinanceJson/Json_File/btc_usd_sharp_00.json", bts_usd_R);
+            //await SerializeJson<List<MathDbKript>>("H:/Projects/MathFinanceJson/MathFinanceJson/MathFinanceJson/Json_File/btc_usd_sharp_00.json", bts_usd_R);
+            await SerializeJson<List<MathDbKript>>("C:/2021/VS2022/MathFinanceJson/MathFinanceJson/Json_File/btc_usd_sharp_00.json", bts_usd_R);
             //<List<MathDbKript>>(fs_write, bts_usd_R, options);
             //using (FileStream fs_write = new FileStream("H:/Projects/MathFinanceJson/MathFinanceJson/MathFinanceJson/Json_File/btc_usd_sharp_00.json", FileMode.OpenOrCreate))
             //using (FileStream fs_write = new FileStream("C:/2021/VS2022/MathFinanceJson/MathFinanceJson/Json_File/btc_usd_sharp_00.json", FileMode.OpenOrCreate))
