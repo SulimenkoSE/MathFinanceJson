@@ -17,35 +17,6 @@ namespace TestProjectMathFinanceJson
     public class ColumnAvarageTest
     {
         //Создаем набор данных для передачи в тесты. После запятой предполагаемый результат
-        //public static IEnumerable<object[]> mathDbData
-        //{
-        //    get
-        //    {
-        //        yield return new object[]{ new List<MathDbKript>
-        //            {
-        //            new MathDbKript( 0, "2013-02-01 00:00:00", 21.10),
-        //            new MathDbKript( 1, "2013-02-02 00:00:00", 21.20),
-        //            new MathDbKript( 2, "2013-02-03 00:00:00", double.NaN),
-        //            new MathDbKript( 3, "2013-02-04 00:00:00", 21.30),
-        //            new MathDbKript( 4, "2013-02-05 00:00:00", 22.30),
-        //            new MathDbKript( 5, "2013-02-06 00:00:00", 23.40)
-        //            },
-        //            21.86, 5, 400, FieldsMathDbKript.AdjClose, 0 //ожидаемый результат result
-        //        };
-
-        //        yield return new object[]{ new List<MathDbKript>
-        //       {
-        //        new MathDbKript( 0, "2013-02-01 00:00:00", 21.10),
-        //        new MathDbKript( 1, "2013-02-02 00:00:00", 21.10),
-        //        new MathDbKript( 2, "2013-02-03 00:00:00", double.NaN),
-        //        new MathDbKript( 3, "2013-02-04 00:00:00", 21.10),
-        //        new MathDbKript( 4, "2013-02-05 00:00:00", 21.10)
-        //        },
-        //        21.10, 5, 400, FieldsMathDbKript.AdjClose, 0 //ожидаемый результат result => double result, int col_end, int period, FieldsMathDbKript fieldsTable, int col_start 
-        //        };
-        //    }
-        //}
-
         public static IEnumerable<object[]> mathDbData(int col_end, int period, FieldsMathDbKript fieldsTable, int col_start)
         {
             yield return new object[]{ new List<MathDbKript>
@@ -80,8 +51,6 @@ namespace TestProjectMathFinanceJson
         //[MemberData(nameof(mathDbData), DisableDiscoveryEnumeration = true)]
 
         [Trait("Avarage", "NaNa")]
-        //[InlineAutoData(5, 400, FieldsMathDbKript.AdjClose, 0)]
-        //[InlineAutoData(3, 200, FieldsMathDbKript.AdjClose, 1)]
         [Theory]
         [MemberData(nameof(mathDbData), 5, 400, FieldsMathDbKript.AdjClose, 0)]
         public void Avarage_returns_correct_result(List<MathDbKript> data, double result, int col_end, int period, FieldsMathDbKript fieldsTable, int col_start)

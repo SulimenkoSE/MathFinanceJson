@@ -134,16 +134,6 @@ namespace MathJson
                 
                 return result;
             }
-            ////Считаем среднее знеачене по выборке 365 значений
-            //X_ = Avarage(data: data, 365, col_end, FieldsMathDbKript.Return);
-            ////Вычисляем сумму квадратов
-            //for (int i = col_start; i < col_end; i++)            {
-            //    // опрделяется ка разница между значением Return и полученным средним значением по всему столбцу 
-            //    // в указанном диапазоне
-            //    if (!double.IsNaN(data[i].Return)) Y_ += (double)Math.Pow((double)(data[i].Return - X_), 2);
-            //}
-            //result = (double)Math.Sqrt((double)(Y_ / (col_end - col_start)));
-            //return result;
         }
 
 
@@ -243,16 +233,6 @@ namespace MathJson
                 sliceMin = slice.Min();
                 if (sliceMax - sliceMin != 0) element[indicator] = (element[indicator] - sliceMin) / (sliceMax - sliceMin);
             }      
-            //var diff = (sliceMax - sliceMin);            
-            //if (diff != 0)
-            //{
-            //    element[indicator] = sliceMax / sliceMin;
-            //}
-            //else
-
-            //{
-
-            //}
         }
         public void AVG(List<MathDbKript> data)
         {
