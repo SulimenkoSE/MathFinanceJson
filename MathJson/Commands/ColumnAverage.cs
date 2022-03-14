@@ -15,8 +15,10 @@ namespace MathJson
                 //return double.NaN;
                 throw new ArgumentOutOfRangeException($"{col_end} reqvested ven total {data.Count}");
             }
+            if (col_end == 1) return data[0][fieldsTable];
             else
             {
+                int elementov = default;
                 double result = double.NaN;
                 var legalValues = from value in data
                                   let marker = value[fieldsTable]
@@ -24,14 +26,22 @@ namespace MathJson
                                   where !double.IsPositiveInfinity(marker)
                                   select marker;
                 // Определяем диапазон выборки
-                if (col_end < period) col_start = 0;
-                else col_start = col_end - period;
+                if (col_end <= period)
+                {
+                    col_start = 0;
+                    elementov = col_end;
+                }
+                else
+                {
+                    col_start = col_end - period;
+                    elementov = period;
+                }
                 //Выбираем из набора данных только то что нам нужно с учетом диапазона выборки
-                var sampleData = legalValues.Skip(col_start).Take(col_end).ToArray();
+                var sampleData = legalValues.Skip(col_start).Take(elementov).ToArray();
                 //Опредеяем среднее значение по выборке
                 if (sampleData.Count() != 0)
                 {
-                    result = sampleData.Average();//value => value[fieldsTable]
+                    result = sampleData.Average();
                 }
                 return result;
             }
