@@ -178,7 +178,11 @@ namespace MathJson
                     case AvgIndicator.Sharpe:
                         return this.Sharpe;
                     case AvgIndicator.PowerLaw:
-                        return this.PowerLaw;                    
+                        return this.PowerLaw; 
+                    case AvgIndicator.Price_52w:
+                        return this.Price_52w;
+                    case AvgIndicator.AVG:
+                        return this.AVG;                  
                     default:
                         throw new NotImplementedException(nameof(AvgIndicator));
                 }
@@ -201,6 +205,12 @@ namespace MathJson
                         break;
                     case AvgIndicator.Mayer:
                         this.Mayer = value;
+                        break;
+                    case AvgIndicator.Price_52w:
+                        this.Price_52w = value;
+                        break;
+                    case AvgIndicator.AVG:
+                        this.AVG = value;
                         break;
                     default:
                         throw new NotImplementedException(nameof(FieldsMathDbKript));
