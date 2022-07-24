@@ -55,7 +55,6 @@ namespace MathJson
             this.PowerLaw = double.NaN;
             this.Ind = 0;
             this.AVG = double.NaN;
-
         }
 
         public double this[FieldsMathDbKript indicator]
@@ -162,7 +161,7 @@ namespace MathJson
                 }
             }
         }
-
+                
         public double this[AvgIndicator indicator]
         {
             get

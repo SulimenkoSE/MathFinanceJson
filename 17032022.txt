@@ -1,0 +1,129 @@
+
+            
+            //    int RowNewJson = index.Index - 949;
+            //    //Console.WriteLine($"Index: {index.Index}");
+            //    //Console.WriteLine($"Index: {RowNewJson + 947}  data_r {bts_usd_R[RowNewJson].Date} data_200  {bts_usd_R_400MA[RowNewJson].Date}");
+            //    //Console.WriteLine($"{bts_usd_R[RowNewJson].AdjClose}");
+            //    //adjValue[RowNewJson] = bts_usd_R_400MA[RowNewJson].AdjClose;          
+
+            //    //400MA
+            //    bts_usd_R[RowNewJson].MA_400 = csd.Avarage(data: bts_usd_R, 400, RowNewJson, FieldsMathDbKript.AdjClose);
+            //    //Выполним проверку расчетногo значения 
+            //    //if (bts_usd_R[RowNewJson].MA_400 != bts_usd_R_400MA[RowNewJson].MA_400) Console.WriteLine($"MA_400 = {bts_usd_R[RowNewJson].MA_400}  а должно быть {bts_usd_R_400MA[RowNewJson].MA_400}");
+
+
+            //    //400MArisk
+            //    if (bts_usd_R[RowNewJson].MA_400 != 0 && !double.IsNaN(bts_usd_R[RowNewJson].MA_400))
+            //    {
+            //        bts_usd_R[RowNewJson].Risk_MA_400 = (double)(bts_usd_R[RowNewJson].AdjClose / bts_usd_R[RowNewJson].MA_400);
+            //    }
+            //    //Выполним проверку расчетногo значения 
+            //    //if (bts_usd_R[RowNewJson].Risk_MA_400 != bts_usd_R_400MA[RowNewJson].Risk_MA_400) Console.WriteLine($"Risk_MA_400 = {bts_usd_R[RowNewJson].Risk_MA_400}");
+
+            //    //200MA
+            //    bts_usd_R[RowNewJson].MA_200 = csd.Avarage(data: bts_usd_R, 200, RowNewJson, FieldsMathDbKript.AdjClose);
+            //    //Выполним проверку расчетногo значения 
+            //    //if (bts_usd_R[RowNewJson].MA_200 != bts_usd_R_400MA[RowNewJson].MA_200) Console.WriteLine($"MA_200 = {bts_usd_R[RowNewJson].MA_200}  а должно быть {bts_usd_R_400MA[RowNewJson].MA_200}");
+
+
+            //    //Mayer
+            //    if (bts_usd_R[RowNewJson].MA_200 != 0 && !double.IsNaN(bts_usd_R[RowNewJson].MA_200))
+            //    {
+            //        bts_usd_R[RowNewJson].Mayer = (double)(bts_usd_R[RowNewJson].AdjClose / bts_usd_R[RowNewJson].MA_200);
+            //    }
+            //    //Выполним проверку расчетногo значения 
+            //    //if (bts_usd_R[RowNewJson].Mayer != bts_usd_R_400MA[RowNewJson].Mayer) Console.WriteLine($"Mayer = {bts_usd_R[RowNewJson].Mayer}  а должно быть {bts_usd_R_400MA[RowNewJson].Mayer}");
+
+            //    ////Console.WriteLine($"MA_200 = {bts_usd_R[RowNewJson].MA_200}");
+
+            //    //btcIssuance
+            //    bts_usd_R[RowNewJson].BtcIssuance = csd.btcIssuance(data: bts_usd_R, RowNewJson);
+            //    //Выполним проверку расчетногo значения 
+            //    //if (bts_usd_R[RowNewJson].BtcIssuance != bts_usd_R_400MA[RowNewJson].BtcIssuance) Console.WriteLine($"BtcIssuance = {bts_usd_R[RowNewJson].BtcIssuance}  а должно быть {bts_usd_R_400MA[RowNewJson].BtcIssuance}");
+
+            //    //usdIssuance
+            //    bts_usd_R[RowNewJson].UsdIssuance = (double)(bts_usd_R[RowNewJson].BtcIssuance * bts_usd_R[RowNewJson].AdjClose);
+            //    //Выполним проверку расчетногo значения 
+            //    //if (bts_usd_R[RowNewJson].UsdIssuance != bts_usd_R_400MA[RowNewJson].UsdIssuance) Console.WriteLine($"UsdIssuance = {bts_usd_R[RowNewJson].UsdIssuance}  а должно быть {bts_usd_R_400MA[RowNewJson].UsdIssuance}");
+
+
+            //    //MAusdIssuance
+            //    bts_usd_R[RowNewJson].MAusdIssuance = csd.Avarage(data: bts_usd_R, 365, RowNewJson, FieldsMathDbKript.UsdIssuance);
+            //    //Выполним проверку расчетногo значения 
+            //    //if (bts_usd_R[RowNewJson].MAusdIssuance != bts_usd_R_400MA[RowNewJson].MAusdIssuance) Console.WriteLine($"MAusdIssuance = {bts_usd_R[RowNewJson].MAusdIssuance}  а должно быть {bts_usd_R_400MA[RowNewJson].MAusdIssuance}");
+
+            //    //PuellMultiple
+            //    bts_usd_R[RowNewJson].PuellMultiple = (double)(bts_usd_R[RowNewJson].UsdIssuance / bts_usd_R[RowNewJson].MAusdIssuance);
+            //    //Выполним проверку расчетногo значения 
+            //    //if (bts_usd_R[RowNewJson].PuellMultiple != bts_usd_R_400MA[RowNewJson].PuellMultiple) Console.WriteLine($"PuellMultiple = {bts_usd_R[RowNewJson].PuellMultiple}  а должно быть {bts_usd_R_400MA[RowNewJson].PuellMultiple}");
+
+            //    //365MA 
+            //    bts_usd_R[RowNewJson].MA_365 = csd.Avarage(data: bts_usd_R, 365, RowNewJson, FieldsMathDbKript.AdjClose);
+            //    //Выполним проверку расчетногo значения 
+            //    //if (bts_usd_R[RowNewJson].MA_365 != bts_usd_R_400MA[RowNewJson].MA_365) Console.WriteLine($"MA_365 = {bts_usd_R[RowNewJson].MA_365}  а должно быть {bts_usd_R_400MA[RowNewJson].MA_365}");
+
+
+            //    //Price_52w 
+            //    if (bts_usd_R[RowNewJson].MA_365 != 0 && !double.IsNaN(bts_usd_R[RowNewJson].MA_365))
+            //    {
+            //        bts_usd_R[RowNewJson].Price_52w = (double)(bts_usd_R[RowNewJson].AdjClose / bts_usd_R[RowNewJson].MA_365);
+            //    }
+            //    //Выполним проверку расчетногo значения 
+            //    //if (bts_usd_R[RowNewJson].Price_52w != bts_usd_R_400MA[RowNewJson].Price_52w) Console.WriteLine($"Price_52w = {bts_usd_R[RowNewJson].Price_52w}  а должно быть {bts_usd_R_400MA[RowNewJson].Price_52w}");
+
+
+            //    //Return
+            //    bts_usd_R[RowNewJson].Return = csd.ReturnPersant(data: bts_usd_R, RowNewJson);
+            //    //Выполним проверку расчетногo значения 
+            //    //if (bts_usd_R[RowNewJson].Return - bts_usd_R_400MA[RowNewJson].Return>0.000000001) Console.WriteLine($"Return = {bts_usd_R[RowNewJson].Return}  а должно быть {bts_usd_R_400MA[RowNewJson].Return}");
+
+
+            //    //365Return%MA-1
+            //    if (RowNewJson < bts_usd_R.Count - 1) bts_usd_R[RowNewJson + 1].Return_MA_365_1 = csd.Avarage(data: bts_usd_R, 365, RowNewJson, FieldsMathDbKript.Return) - 1;
+            //    //Выполним проверку расчетногo значения 
+            //    //if (double.IsNaN(bts_usd_R[RowNewJson].Return_MA_365_1)) Console.WriteLine($"Index: {index.Index} >>> Return_MA_365_1 = {bts_usd_R[RowNewJson].Return_MA_365_1} is NaN");
+            //    //else Console.WriteLine($"Index: {index.Index} >>> Return_MA_365_1 = {bts_usd_R[RowNewJson].Return_MA_365_1}");
+
+            //    if (bts_usd_R[RowNewJson].Return_MA_365_1 - bts_usd_R_400MA[RowNewJson].Return_MA_365_1 > 0.00000001) Console.WriteLine($"Index: {index.Index} >>> Return_MA_365_1 = {bts_usd_R[RowNewJson].Return_MA_365_1}  а должно быть {bts_usd_R_400MA[RowNewJson].Return_MA_365_1}");
+            //}
+
+            //foreach (var index in bts_usd_R)
+            //{
+            //    int RowNewJson = index.Index - 949;
+            //    //365Return%STD
+            //    if (RowNewJson < bts_usd_R.Count - 1) bts_usd_R[RowNewJson + 1].Return_365_STD = csd.Return_365_STD(data: bts_usd_R, 365, RowNewJson, FieldsMathDbKript.Return);
+            //    //Выполним проверку расчетногo значения 
+            //    //if (bts_usd_R[RowNewJson].Return_365_STD - bts_usd_R_400MA[RowNewJson].Return_365_STD > 0.00000001) 
+            //    //    Console.WriteLine($"Index: {index.Index} >>> Return_365_STD = {bts_usd_R[RowNewJson].Return_365_STD}  а должно быть {bts_usd_R_400MA[RowNewJson].Return_365_STD}");
+            //}
+
+            //foreach (var index in bts_usd_R)
+            //{
+            //    int RowNewJson = index.Index - 949;
+            //    //Shape
+            //    // ++++++++++++Проверить данные
+            //    if (bts_usd_R[RowNewJson].Return_365_STD != 0 && !double.IsNaN(bts_usd_R[RowNewJson].Return_365_STD))
+            //    {
+            //        bts_usd_R[RowNewJson].Sharpe = (double)(bts_usd_R[RowNewJson].Return_MA_365_1 /
+            //                                                bts_usd_R[RowNewJson].Return_365_STD);
+            //    }
+            //    //Выполним проверку расчетногo значения 
+            //    //if (bts_usd_R[RowNewJson].Sharpe - bts_usd_R_400MA[RowNewJson].Sharpe>0.00000001) Console.WriteLine($"Sharpe = {bts_usd_R[RowNewJson].Sharpe} а должно быть {bts_usd_R_400MA[RowNewJson].Sharpe}");
+
+
+            //    //ind
+            //    bts_usd_R[RowNewJson].Ind = RowNewJson - 2;
+            //    //Выполним проверку расчетногo значения 
+            //    //if (bts_usd_R[RowNewJson].Ind - bts_usd_R_400MA[RowNewJson].Ind > 0.00000001) Console.WriteLine($"Ind = {bts_usd_R[RowNewJson].Ind} а должно быть {bts_usd_R_400MA[RowNewJson].Ind}");
+
+            //    //if (RowNewJson == 10) break;
+            //}
+            ////PowerLaw
+            //csd.PoweLaw(data: bts_usd_R, data_0: bts_usd_R_400MA);
+            ////произведем нормализацию данных после рассчета
+            //csd.NormalizationData(data: bts_usd_R, data_0: bts_usd_R_400MA);
+
+
+
+            ////Avg
+            //csd.AVG(data: bts_usd_R, bts_usd_R_400MA);

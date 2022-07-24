@@ -87,7 +87,7 @@ namespace MathJson
 
                 if (returnData.Count() > 1)
                 {
-                    result = (double)((returnData[1]*100/ returnData[0]) - 100);
+                    result = (double)((returnData[1] * 100 / returnData[0]) - 100);
                 }
                 return result;
             }
@@ -109,10 +109,20 @@ namespace MathJson
             }
             else
             {
+                int elementov = default;
                 // Определяем диапазон выборки
-                if (col_end >= period) col_start = col_end - period;
+                if (col_end <= period)
+                {
+                    col_start = 0;
+                    elementov = col_end;
+                }
+                else
+                {
+                    col_start = col_end - period;
+                    elementov = period;
+                }
 
-                //Считаем среднее знеачене по выборке 365 значений
+                //Считаем среднее значение по выборке 365 значений
                 X_ = Avarage(data: data, 365, col_end, fieldsTable);
                 // Вдруг имеем double.NaN
                 if (!double.IsNaN(X_))
@@ -124,11 +134,14 @@ namespace MathJson
                                       where !double.IsPositiveInfinity(marker)
                                       select (double)Math.Pow((double)(marker - X_), 2);
 
-                    var returnData = legalValues.Skip(col_start).Take(col_end).ToArray();
+                    var returnData = legalValues.Skip(col_start).Take(elementov).ToArray();
 
-                    if (returnData.Count() - col_start > 0)
+                    if (returnData.Count() > 0)
                     {
-                        result = (double)Math.Sqrt((double)(returnData.Sum() / (returnData.Count() - col_start)));
+                        result = (double)Math.Sqrt((double)(returnData.Sum() / (returnData.Count() - 1)));
+                        //result = (double)Math.Sqrt(returnData.Average());
+                        //var ghf = (double)Math.Sqrt((double)(returnData.Sum() / (returnData.Count() - 1)));
+                        //Console.WriteLine($"Math.Sqrt = {ghf}");
                     }
                 }
 
@@ -137,62 +150,109 @@ namespace MathJson
         }
 
 
-        public void PoweLaw(List<MathDbKript> data)
+        public void PoweLaw(List<MathDbKript> data, List<MathDbKript> data_0)
         {
-
-            ////Вычисляем xValues
-            //double[] xValues = new double[data.Count()];
-            ////xValues[0] = 0;
-            //double[] yValues = new double[data.Count()];
-            ////yValues[0] = 0;
-
             for (int i = 0; i < data.Count(); i++)
             {
-                //Вычисляем xValues
-                double[] xValues = new double[i + 1];
-                //xValues[0] = 0;
-                double[] yValues = new double[i + 1];
-                //yValues[0] = 0;
+                PowerLawFields(data, i);
+                ////Вычисляем xValues
+                //double[] xValues = new double[i + 1];
+                ////xValues[0] = 0;
+                //double[] yValues = new double[i + 1];
+                ////yValues[0] = 0;
 
-                for (int j = 0; j < i + 1; j++)
-                {
-                    //Вычисляем xValues
-                    xValues[j] = Math.Log10(data[j].Ind);
-                    //Вычисляем yValues
-                    yValues[j] = Math.Log10(data[j].AdjClose);
+                //for (int j = 0; j < i + 1; j++)
+                //{
+                //    //Вычисляем xValues
+                //    xValues[j] = Math.Log10(data[j].Ind);
+                //    //Вычисляем yValues
+                //    yValues[j] = Math.Log10(data[j].AdjClose);
 
-                }
+                //}
 
-                if (i > 0 && i < data.Count())
-                {
-                    //Линейниая регрессия
-                    double rSquared, intercept, slope;
-                    LinearRegression rS = new LinearRegression();
-                    rS.LinearRegressions(xValues, yValues, out rSquared, out intercept, out slope);
+                //if (i > 0 && i < data.Count())
+                //{
+                //    //Линейниая регрессия
+                //    double rSquared, intercept, slope;
+                //    LinearRegression rS = new LinearRegression();
+                //    rS.LinearRegressions(xValues, yValues, out rSquared, out intercept, out slope);
 
-                    var predictedValue = (slope * Math.Log10(data[i].Ind)) + intercept; //посленее значение по оси xValues
-                    //Console.WriteLine($"PredictionValue: {predictedValue}");
-                    data[i - 1].PowerLaw = (double)(Math.Log10(data[i - 1].AdjClose) - predictedValue);
-                    //double result = double.IsNaN(predictedValue) ? 0 : (double)(Math.Log10(data[col_end].AdjClose - predictedValue));
-                    //double result = (double)(Math.Log10(data[i-1].AdjClose) - predictedValue);
-                    //if (double.IsNaN(result)) result = yValues[i];                
-                }
+                //    var predictedValue = (slope * Math.Log10(data[i].Ind)) + intercept; //посленее значение по оси xValues
+                //    //Console.WriteLine($"PredictionValue: {predictedValue}");
+                //    data[i - 1].PowerLaw = (double)(Math.Log10(data[i - 1].AdjClose) - predictedValue);
+                //    //double result = double.IsNaN(predictedValue) ? 0 : (double)(Math.Log10(data[col_end].AdjClose - predictedValue));
+                //    //double result = (double)(Math.Log10(data[i-1].AdjClose) - predictedValue);
+                //    //if (double.IsNaN(result)) result = yValues[i];                
+                //}
+
+            }
+            for (int i = 0; i < data.Count(); i++)
+            {
+                //Выполним проверку расчетногo значения 
+                if (data[i].PowerLaw - data_0[i].PowerLaw > 0.00000001) 
+                    Console.WriteLine($"Ind = {data[i].PowerLaw} а должно быть {data_0[i].PowerLaw}");
             }
         }
-        public void NormalizationData(List<MathDbKript> data)
+
+        public void PowerLawFields(List<MathDbKript> data, int index)
         {
+            //Вычисляем xValues
+            double[] xValues = new double[index + 1];
+            //xValues[0] = 0;
+            double[] yValues = new double[index + 1];
+            //yValues[0] = 0;
+
+            for (int j = 0; j < index; j++)
+            {
+                //Вычисляем xValues
+                xValues[j] = Math.Log10(data[j].Ind);
+                //Вычисляем yValues
+                yValues[j] = Math.Log10(data[j].AdjClose);
+
+            }
+
+            if (index > 0 && index < data.Count())
+            {
+                //Линейниая регрессия
+                double rSquared, intercept, slope;
+                LinearRegression rS = new LinearRegression();
+                rS.LinearRegressions(xValues, yValues, out rSquared, out intercept, out slope);
+
+                var predictedValue = (slope * Math.Log10(data[index].Ind)) + intercept; //посленее значение по оси xValues
+                data[index-1].PowerLaw = (double)(Math.Log10(data[index].AdjClose) - predictedValue);               
+            }
+        }
+        public void NormalizationData(List<MathDbKript> data, List<MathDbKript> data_0)
+        {
+
             for (int i = 0; i < data.Count; i++)
             {
-                ProcessIndicator(data, i, AvgIndicator.PuellMultiple);
-                //if (sliceMax - sliceMin !=0)  data[i].PuellMultiple =  (data[i].PuellMultiple - sliceMin) / (sliceMax - sliceMin);
-                ProcessIndicator(data, i, AvgIndicator.Price_52w);
-                ProcessIndicator(data, i, AvgIndicator.PowerLaw);
-                ProcessIndicator(data, i, AvgIndicator.Sharpe);
-                ProcessIndicator(data, i, AvgIndicator.Mayer);
-                ProcessIndicator(data, i, AvgIndicator.Risk_MA_400);
+                NormalizationDataFields(data, i);
+                //foreach (AvgIndicator avgIndicator in Enum.GetValues(typeof(AvgIndicator)))
+                //{
+                //    if (avgIndicator != AvgIndicator.AVG)
+                //        ProcessIndicator(data, i, avgIndicator);
+                //}
             }
+            //for (int i = 0; i < data.Count; i++)
+            //{
+            //    foreach (AvgIndicator avgIndicator in Enum.GetValues(typeof(AvgIndicator)))
+            //    {
+            //        if (avgIndicator != AvgIndicator.AVG)
+            //            Выполним проверку расчетногo значения
+            //            if (data[i][avgIndicator] - data_0[i][avgIndicator] > 0.00000001) Console.WriteLine($"PuellMultiple = {data[i][avgIndicator]} а должно быть {data_0[i][avgIndicator]}");
+            //    }
+            //}
         }
 
+        public void NormalizationDataFields(List<MathDbKript> data, int index)
+        {
+            foreach (AvgIndicator avgIndicator in Enum.GetValues(typeof(AvgIndicator)))
+            {
+                if (avgIndicator != AvgIndicator.AVG)
+                    ProcessIndicator(data, index, avgIndicator);
+            }
+        }
         public void ProcessIndicator(List<MathDbKript> data, int index, AvgIndicator indicator)
         {
             double sliceMin = default;
@@ -211,29 +271,11 @@ namespace MathJson
             {
                 sliceMax = slice.Max();
                 sliceMin = slice.Min();
-                if (sliceMax - sliceMin != 0) element[indicator] = (element[indicator] - sliceMin) / (sliceMax - sliceMin);
+                if (sliceMax - sliceMin != 0) element[indicator] = (double)(element[indicator] - sliceMin) / (sliceMax - sliceMin);
             }
         }
         public void AVG(List<MathDbKript> data, List<MathDbKript> resultAvg)
         {
-            //string[] indicators = { "PuellMultiple", "PowerLaw", "Sharpe", "Risk_MA_400", "Mayer"};
-            //AvgIndicator indicator = new AvgIndicator();
-            //var legalValues = from value in data
-            //                  let marker = value[indicator]
-            //                  where !double.IsNaN(marker)
-            //                  //where marker != 0
-            //                  where !double.IsPositiveInfinity(marker)
-            //                  //select marker;
-            //                  //Некотрые столбцы из общего набора столбцов
-            //                  select new
-            //                  {
-            //                      puellMultiple = value[AvgIndicator.PuellMultiple],
-            //                      powerLaw = value[AvgIndicator.PowerLaw],
-            //                      sharpe = value[AvgIndicator.Sharpe],
-            //                      risk_MA_400 = value[AvgIndicator.Risk_MA_400],
-            //                      mayer = value[AvgIndicator.Mayer]
-            //                  };
-
             double result = default;
             //Считаем среднее знеачене по строке
             for (int index = 0; index < data.Count; index++)
@@ -242,25 +284,22 @@ namespace MathJson
                 int rows = default;
                 foreach (AvgIndicator _indicator in Enum.GetValues(typeof(AvgIndicator)))
                 {
-                    if (!double.IsNaN(data[index][_indicator]) && 
+                    if (!double.IsNaN(data[index][_indicator]) &&
                         !double.IsPositiveInfinity(data[index][_indicator]) &&
                         _indicator != AvgIndicator.AVG)
                     {
                         X_ += data[index][_indicator];
                         rows += 1;
-                    }                    
+                    }
                 }
                 if (rows != 0) result = X_ / rows;
-                data[index].AVG = result * (double)Math.Pow(data[index].Index, 0.395);
+                data[index].AVG = result * (double)Math.Pow(index, 0.395);
                 ProcessIndicator(data, index, AvgIndicator.AVG);
                 //Выполним проверку расчетногo значения 
                 if (data[index].AVG != resultAvg[index].AVG) Console.WriteLine($"AVG = {data[index].AVG}  а должно быть {resultAvg[index].AVG}");
 
             }
         }
-
-
-
     }
 
     public enum AvgIndicator
